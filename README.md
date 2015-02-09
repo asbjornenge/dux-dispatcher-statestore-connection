@@ -1,6 +1,6 @@
 # dux-dispatcher-statestore-connection
 
-This is a convenience wrapper for [dux-dispatcher-connection](https://github.com/asbjornenge/dux-dispatcher-connection) and [dux-statestore-api-client](https://github.com/asbjornenge/dux-statestore-api-client) keeping track of dispatcher connection state and querying the statestore for current value on initial connection(s). It simplifies building out dux services relying on statestore state.
+This is a convenience wrapper for [dux-dispatcher-connection](https://github.com/asbjornenge/dux-dispatcher-connection) and [dux-statestore-api-client](https://github.com/asbjornenge/dux-statestore-api-client) keeping track of dispatcher connection state and querying the statestore for current value on initial connection(s). It simplifies building out dux services relying on statestore data.
 
 ## Install
 
