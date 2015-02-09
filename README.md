@@ -11,7 +11,7 @@ This is a convenience wrapper for [dux-dispatcher-connection](https://github.com
     var ddsc = require('dux-dispatcher-statestore-connection')
     ddsc.on('/state/hosts', function() {
         // As soon as dispatcher is ready this function will be called with the current value in the statestore
-        // It also acts as a normal dispatcher subscription and will also be called when the state value changes
+        // .on also acts as a normal dispatcher subscription meaning this function will be called when the state value changes
     })
     ddsc.listen()
 

@@ -1,56 +1,42 @@
-var assign  = Object.assign || require('object.assign')
-var faye    = require('faye')
-var retry   = require('retry-connection')
-var EE      = require('events').EventEmitter
+var ddc = require('dux-dispatcher-connection')
+var dsa = require('dux-statestore-api-client')
+var EE  = require('events').EventEmitter
 
-var DispatcherConnection = function(options) {
-    this.ready         = false
-    this.client        = null
-    this.host          = options.host
-    this.port          = options.port
+var DispatcherStatestoreConnection = function(options) {
+    this.dispatcher    = options.dispatcher || {}
+    this.statestore    = options.statestore || {}
     this.interval      = options.interval   || 5000
     this.timeout       = options.timeout    || 500
-    this.statestore    = options.statestore || {}
     this.subscriptions = []
 }
-DispatcherConnection.prototype =  assign({
+DispatcherStatestoreConnection.prototype = {
 
-    listen : function() {
-        this.connection = retry({ 
-            host     : this.host, 
-            port     : this.port,
+    start : function() {
+        this.ddc = ddc({
+            host     : this.dispatcher.host,
+            port     : this.dispatcher.port,
             interval : this.interval,
             timeout  : this.timeout
         })
-        this.connection.on('ready', this.handleReady.bind(this))
-        this.connection.on('issue', this.handleIssue.bind(this))
-        this.connection.connect()
+        this.dsa = dsa({
+            host     : this.statestore.host,
+            port     : this.statestore.port
+        })
+        this.ddc.on('up', this.handleUp.bind(this))
+        this.ddc.on('down', this.handleDown.bind(this))
     },
 
-    handleReady : function() {
-        if (this.ready) return
-        this.ready  = true
-        this.client = new faye.Client(this.getURI())
+    handleUp : function() {
         this.subscripeAll()
-        this.emit('up')
     },
 
-    handleIssue : function(issue) {
-        console.log(issue.message)
-        if (!this.ready) return
-        this.ready  = false
+    handleDown : function(issue) {
         this.unsubscribeAll()
-        this.client = null 
-        this.emit('down')
-    },
-
-    getURI : function() {
-        return 'http://'+this.host+':'+this.port
     },
 
     on : function(channel, fn, options) {
         options = options || { queryStateStore : true }
-        this.subscriptions.push({ channel : channel, callback : fn, options : options  }
+        this.subscriptions.push({ channel : channel, callback : fn, options : options })
     },
 
     off : function(channel, fn) {
@@ -73,18 +59,13 @@ DispatcherConnection.prototype =  assign({
     },
 
     queryStateStore : function(state, fn) {
-        if (!this.statestore.host) return
-        if (!this.statestore.port) return
         state = state.split('/state')[1]
-        require('dux-statestore-api-client')({
-            host : this.statestore.host,
-            port : this.statestore.port
-        }).getState(state, function(err, currentState) {
+        dsa.getState(state, function(err, currentState) {
             if (err) { console.error(err); return }
             fn(currentState)
         })
     }
 
-}, EE.prototype)
+}
 
-module.exports = function(options) { return new DispatcherConnection(options)  }
+module.exports = function(options) { return new DispatcherStatestoreConnection(options)  }
