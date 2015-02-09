@@ -8,7 +8,16 @@ This is a convenience wrapper for [dux-dispatcher-connection](https://github.com
 
 ## Use
 
-    var ddsc = require('dux-dispatcher-statestore-connection')
+    var ddsc = require('dux-dispatcher-statestore-connection')({
+        dispatcher : {
+            host : 'dux-dispatcher.dux.test',
+            port : 8000
+        },
+        statestore : {
+            host : 'dux-statestore.dux-test',
+            port : 8000
+        }
+    })
     ddsc.on('/state/hosts', function() {
         // As soon as dispatcher is ready this function will be called with the current value in the statestore
         // .on also acts as a normal dispatcher subscription meaning this function will be called when the state value changes
