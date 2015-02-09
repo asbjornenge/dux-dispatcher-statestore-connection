@@ -8,7 +8,8 @@ var ddsc = require('./index')({
         port : 8000
     }
 })
-ddsc.on('/state/container', function(err, containers) {
+ddsc.on('/state/containers', function(err, containers) {
     console.log(err, containers)
     process.exit(0)
 })
+ddsc.start()

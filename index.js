@@ -24,6 +24,7 @@ DispatcherStatestoreConnection.prototype = {
         })
         this.ddc.on('up', this.handleUp.bind(this))
         this.ddc.on('down', this.handleDown.bind(this))
+        this.ddc.listen()
     },
 
     handleUp : function() {
