@@ -4,12 +4,14 @@ var ddsc = require('./index')({
         port : 8000
     },
     statestore : {
-        host : 'dux-statestore.dux-test',
+        host : 'dux-statestore.dux.test',
         port : 8000
     }
 })
 ddsc.on('/state/containers', function(err, containers) {
     console.log(err, containers)
-    process.exit(0)
+})
+ddsc.on('/state/hosts', function(err, containers) {
+    console.log(err, containers)
 })
 ddsc.start()

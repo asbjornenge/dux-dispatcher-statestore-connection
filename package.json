@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/asbjornenge/dux-dispatcher-statestore-connection",
   "dependencies": {
-    "dux-dispatcher-connection": "^2.0.1",
+    "dux-dispatcher-connection": "^2.0.2",
     "dux-statestore-api-client": "^2.0.0"
   }
 }

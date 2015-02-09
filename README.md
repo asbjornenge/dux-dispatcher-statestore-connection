@@ -14,7 +14,7 @@ This is a convenience wrapper for [dux-dispatcher-connection](https://github.com
             port : 8000
         },
         statestore : {
-            host : 'dux-statestore.dux-test',
+            host : 'dux-statestore.dux.test',
             port : 8000
         }
     })

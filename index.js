@@ -28,7 +28,7 @@ DispatcherStatestoreConnection.prototype = {
     },
 
     handleUp : function() {
-        this.subscripeAll()
+        this.subscribeAll()
     },
 
     handleDown : function(issue) {
@@ -47,23 +47,22 @@ DispatcherStatestoreConnection.prototype = {
     },
 
     subscribeAll : function() {
-        this.subscribeAll.forEach(function(sub) {
-            sub.subscription = this.client.subscribe(sub.channel, sub.callback)
+        this.subscriptions.forEach(function(sub) {
+            sub.subscription = this.ddc.subscribe(sub.channel, function(data) { sub.callback(null, data) })
             if (sub.channel.indexOf('/state') == 0 && sub.options.queryStateStore) this.queryStateStore(sub.channel, sub.callback)
         }.bind(this))
     },
 
     unsubscribeAll : function() {
-        this.subscribeAll.forEach(function(sub) {
+        this.subscriptions.forEach(function(sub) {
             if (sub.subscription) sub.subscription.cancel()
         }.bind(this))
     },
 
     queryStateStore : function(state, fn) {
         state = state.split('/state')[1]
-        dsa.getState(state, function(err, currentState) {
-            if (err) { console.error(err); return }
-            fn(currentState)
+        this.dsa.getState(state, function(err, currentState) {
+            fn(err, currentState)
         })
     }
 
