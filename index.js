@@ -3,6 +3,8 @@ var dsa = require('dux-statestore-api-client')
 var EE  = require('events').EventEmitter
 
 var DispatcherStatestoreConnection = function(options) {
+    this.ddc_ready     = false
+    this.dsa_ready     = false
     this.dispatcher    = options.dispatcher || {}
     this.statestore    = options.statestore || {}
     this.interval      = options.interval   || 5000
@@ -20,15 +22,24 @@ DispatcherStatestoreConnection.prototype = {
         })
         this.dsa = dsa({
             host     : this.statestore.host,
-            port     : this.statestore.port
+            port     : this.statestore.port,
+            interval : this.interval,
+            timeout  : this.timeout
         })
-        this.ddc.on('up', this.handleUp.bind(this))
-        this.ddc.on('down', this.handleDown.bind(this))
+        this.ddc.on('up',   function() { this.ddc_ready = true;  this.handleUp()   }.bind(this))
+        this.ddc.on('down', function() { this.ddc_ready = false; this.handleDown() }.bind(this))
         this.ddc.listen()
+        this.dsa.on('up',   function() { this.dsa_ready = true;  this.handleUp()   }.bind(this))
+        this.dsa.on('down', function() { this.dsa_ready = false; this.handleDown() }.bind(this))
+        this.dsa.listen()
+    },
+
+    isReady : function() {
+        return this.ddc_ready && this.dsa_ready
     },
 
     handleUp : function() {
-        this.subscribeAll()
+        if (this.isReady()) this.subscribeAll()
     },
 
     handleDown : function(issue) {
