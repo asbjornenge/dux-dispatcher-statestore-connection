@@ -1,6 +1,6 @@
 {
   "name": "dux-dispatcher-statestore-connection",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Convenience wrapper for dispatcher connection and statestore api client",
   "main": "index.js",
   "scripts": {
@@ -23,6 +23,6 @@
   "homepage": "https://github.com/asbjornenge/dux-dispatcher-statestore-connection",
   "dependencies": {
     "dux-dispatcher-connection": "^2.0.2",
-    "dux-statestore-api-client": "^2.0.0"
+    "dux-statestore-api-client": "^2.1.0"
   }
 }
